@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<canvas id="game" width="1366" height="768"></canvas>
+<script type="text/javascript">
+	var canvas= document.getElementById('game');
+	var ctx = canvas.getContext('2d');
+	var ballX= 50;
+	var ballSpeedX = 14;
+	var ballY= 50;
+	var ballSpeedY = 7;
+	var fps = 60;
+
+	var paddleY = canvas.height/2;
+	const PADDLE_HEIGHT = 100;
+
+	window.onload = function() {
+		
+		setInterval(callBoth, 1000/fps);
+
+		canvas.addEventListener('mousemove', 
+			function(evt) {
+				var mousePos = mouseTrack(evt)
+				paddleY = mousePos.y-(PADDLE_HEIGHT/2);
+				
+			},)
+	
+		
+	}
+
+	function ballReset() {
+		ballSpeedX = - ballSpeedX;
+		ballSpeedY = - ballSpeedY;
+		ballX = canvas.width/2;
+		ballY = canvas.height/2;
+			
+	
+		
+	}
+
+	function mouseTrack(evt) {
+		var rect = canvas.getBoundingClientRect();
+		var root = document.documentElement;
+
+		var mX = evt.clientX - rect.left - root.scrollLeft;
+		var mY = evt.clientY - rect.top - root.scrollTop;
+
+		return {
+			x:mX,
+			y:mY
+		}
+	
+		
+	}
+
+	function callBoth() {
+		moveBall();
+		drawRect(0,0,canvas.width,canvas.height,'black');
+		drawRect(0,paddleY,10,PADDLE_HEIGHT,'red');
+		drawRect(canvas.width-10,canvas.height/2,10,90,'red');
+		ctx.fillStyle = 'blue';
+		ctx.beginPath();
+		ctx.arc(ballX,ballY,20,0,2*Math.PI,true);
+		ctx.fill();
+
+		
+		
+	}
+
+	function drawRect(left,top,width,height,color) {
+		ctx.fillStyle = color;
+		ctx.fillRect(left,top,width,height);
+	}
+
+	function moveBall() {
+		ballX = ballX + ballSpeedX;
+		ballY = ballY + ballSpeedY;
+		if (ballX > canvas.width) {
+			ballSpeedX = -ballSpeedX;
+		}
+		if (ballX < 0) {
+			if (ballY > paddleY && ballY < paddleY+PADDLE_HEIGHT) {
+				ballSpeedX = -ballSpeedX;
+			}else
+				ballReset();
+		}
+		if (ballY > canvas.height) {
+			ballSpeedY = -ballSpeedY;
+		}
+		if (ballY < 0) {
+			ballSpeedY = -ballSpeedY;
+		}
+		
+		
+	}
+</script>
+<head>
+	<title></title>
+</head>
+<body>
+
+</body>
+</html>
